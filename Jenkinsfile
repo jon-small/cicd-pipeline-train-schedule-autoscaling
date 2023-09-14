@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         //be sure to replace "willbla" with your own Docker Hub username
-        DOCKER_IMAGE_NAME = "willbla/train-schedule"
+        DOCKER_IMAGE_NAME = "jonsmall333/train-schedule"
     }
     stages {
         stage('Build') {
@@ -45,12 +45,34 @@ pipeline {
             steps {
                 input 'Deploy to Production?'
                 milestone(1)
-                kubernetesDeploy(
-                    kubeconfigId: 'kubeconfig',
-                    configs: 'train-schedule-kube.yml',
-                    enableConfigSubstitution: true
-                )
+                //Logic to deploy K8s pod to raspbpi cluster using kubernetes CLI plugin and K3s client
+                withKubeConfig([credentialsId: 'kubeconfig-file']) {
+                      sh 'k3s kubectl apply -f $JENKINS_HOME/workspace/train-schedule-kubernetes_master/train-schedule-kube.yml'
+                }
             }
         }
     }
 }
+
+/*pipeline {
+    agent any
+    environment {
+        //be sure to replace "willbla" with your own Docker Hub username
+        DOCKER_IMAGE_NAME = "jonsmall333/train-schedule"
+    }
+    stages {   
+        stage('DeployToProduction') {
+            when {
+                branch 'master'
+            }
+            steps {
+                input 'Deploy to Production?'
+                milestone(1)
+                //Logic to deploy K8s pod to raspbpi cluster using kubernetes-cd plugin v1.0.0
+                withKubeConfig([credentialsId: 'kubeconfig-file']) {
+                      sh 'k3s kubectl apply -f $JENKINS_HOME/workspace/train-schedule-kubernetes_master/train-schedule-kube.yml'
+                }
+            }
+        }
+    }
+}*/
