@@ -47,7 +47,7 @@ pipeline {
                 milestone(1)
                 //Logic to deploy K8s pod to raspbpi cluster using kubernetes CLI plugin and K3s client
                 withKubeConfig([credentialsId: 'kubeconfig-file']) {
-                      sh 'k3s kubectl apply -f $JENKINS_HOME/workspace/train-schedule-kubernetes_master/train-schedule-kube.yml'
+                      sh 'k3s kubectl apply -f $JENKINS_HOME/workspace/train-schedule-autoscale_master/train-schedule-kube.yml'
                 }
             }
         }
