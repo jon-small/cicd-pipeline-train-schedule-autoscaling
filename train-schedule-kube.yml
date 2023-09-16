@@ -38,7 +38,7 @@ spec:
     spec:
       containers:
       - name: train-schedule
-        image: image: jonsmall333/train-schedule-autoscale:latest
+        image: jonsmall333/train-schedule-autoscale:latest
         ports:
         - containerPort: 8080
         livenessProbe:
